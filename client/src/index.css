@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    color-scheme: dark; /* dark native scrollbars, selects, date pickers */
+  }
+  body {
+    @apply bg-canvas font-body text-ink antialiased;
+    /* soft warm glows behind the content */
+    background-image: radial-gradient(1000px 500px at 10% -10%, rgba(194, 84, 45, 0.16), transparent 60%),
+      radial-gradient(800px 500px at 100% 0%, rgba(224, 165, 38, 0.08), transparent 60%);
+    background-attachment: fixed;
+  }
+  ::selection {
+    background: rgba(224, 165, 38, 0.35);
+  }
+  option {
+    background-color: #1f1813;
+    color: #f5ebdd;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading text-ink;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-mustard ring-offset-2 ring-offset-canvas;
+  }
+}
+
+@layer components {
+  /* Block-print style motif strip used as a decorative border */
+  .block-print-border {
+    height: 14px;
+    background-color: #c2542d;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='14' viewBox='0 0 28 14'%3E%3Cpath d='M14 1 L20 7 L14 13 L8 7 Z' fill='%23E0A526'/%3E%3Ccircle cx='0' cy='7' r='2.5' fill='%23FAF5EC'/%3E%3Ccircle cx='28' cy='7' r='2.5' fill='%23FAF5EC'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-size: 28px 14px;
+  }
+  .block-print-border-indigo {
+    height: 10px;
+    background-color: #2f3e66;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10' viewBox='0 0 20 10'%3E%3Ccircle cx='10' cy='5' r='2.5' fill='%23E0A526'/%3E%3Cpath d='M0 5 L3 2 L3 8 Z M20 5 L17 2 L17 8 Z' fill='%23FAF5EC'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-size: 20px 10px;
+  }
+  /* Soft paisley/booti pattern for hero panels */
+  .booti-pattern {
+    background-color: #2f3e66;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23E0A526' stroke-opacity='0.35' stroke-width='1.5'%3E%3Ccircle cx='30' cy='30' r='8'/%3E%3Cpath d='M30 14 L34 22 L30 26 L26 22 Z'/%3E%3Cpath d='M30 46 L34 38 L30 34 L26 38 Z'/%3E%3Cpath d='M14 30 L22 26 L26 30 L22 34 Z'/%3E%3Cpath d='M46 30 L38 26 L34 30 L38 34 Z'/%3E%3C/g%3E%3Ccircle cx='0' cy='0' r='3' fill='%23FAF5EC' fill-opacity='0.25'/%3E%3Ccircle cx='60' cy='60' r='3' fill='%23FAF5EC' fill-opacity='0.25'/%3E%3C/svg%3E");
+  }
+  /* Hero background: faint terracotta diamonds on the dark canvas */
+  .cream-pattern {
+    background-color: transparent;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M20 12 L24 20 L20 28 L16 20 Z' fill='%23E0A526' fill-opacity='0.06'/%3E%3C/svg%3E");
+  }
+  .skeleton {
+    background: linear-gradient(90deg, #2b221b 0%, #3a2e25 50%, #2b221b 100%);
+    background-size: 800px 100%;
+    @apply animate-shimmer;
+  }
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  scrollbar-width: none;
+}
