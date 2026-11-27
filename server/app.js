@@ -3,8 +3,17 @@ import cors from 'cors';
 import { env } from './config/env.js';
 import apiRoutes from './routes/index.js';
 import { apiLimiter } from './middleware/rateLimit.js';
-import { notFound, errorHandler } from './middleware/errorHandler.js';
+import { notFound, errorHandler, AppError } from './middleware/errorHandler.js';
 import { securityHeaders, noStore } from './middleware/security.js';
+
+// Same site = the page and the API share one address (Vercel, or the Vite dev proxy)
+function isSameSite(req, origin) {
+  try {
+    return new URL(origin).host === (req.headers['x-forwarded-host'] || req.headers.host);
+  } catch {
+    return false;
+  }
+}
 
 const app = express();
 
@@ -15,13 +24,13 @@ app.set('trust proxy', env.trustProxy);
 app.use(securityHeaders);
 
 app.use(
-  cors({
-    origin(origin, cb) {
-      // allow tools like curl/Postman (no origin) and the configured frontend(s)
-      if (!origin || env.clientUrls.includes(origin)) return cb(null, true);
-      return cb(new Error(`Origin ${origin} is not allowed by CORS`));
-    },
-    credentials: true,
+  cors((req, cb) => {
+    const origin = req.headers.origin;
+    // allow tools like curl/Postman (no origin), the site itself, and the configured frontend(s)
+    if (!origin || isSameSite(req, origin) || env.clientUrls.includes(origin)) {
+      return cb(null, { origin: true, credentials: true });
+    }
+    return cb(new AppError(`This website (${origin}) is not allowed to use the HastaNova API.`, 403));
   })
 );
 app.use(express.json({ limit: '100kb' }));

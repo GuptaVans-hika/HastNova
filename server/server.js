@@ -5,7 +5,11 @@ import MarketTrends from './models/MarketTrends.js';
 import UserRoadmap from './models/UserRoadmap.js';
 import { isAIConfigured } from './services/llm/index.js';
 
-await connectDB();
+try {
+  await connectDB();
+} catch {
+  process.exit(1);
+}
 // Apply index changes (e.g. trends are now unique per craft + source, not per craft)
 await Promise.all([MarketTrends.syncIndexes(), UserRoadmap.syncIndexes()]);
 console.log(isAIConfigured() ? `🤖 AI providers: ${env.llm.order.join(' -> ')}` : '⚠️  No AI keys set - using seeded data only');

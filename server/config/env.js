@@ -1,15 +1,17 @@
 ﻿import 'dotenv/config';
 
+// Throws (instead of exiting) so that on Vercel the API can answer with a clear message.
+// Locally the uncaught error still stops the server.
 const required = ['MONGODB_URI', 'JWT_SECRET'];
 const missing = required.filter((k) => !process.env[k]);
 if (missing.length) {
-  console.error(`❌ Missing required env vars: ${missing.join(', ')}. Copy .env.example to .env and fill them in.`);
-  process.exit(1);
+  throw new Error(
+    `Missing required env vars: ${missing.join(', ')}. Locally: copy .env.example to .env. On Vercel: Settings -> Environment Variables, then redeploy.`
+  );
 }
 
 if (/<[A-Z_]*PASSWORD[A-Z_]*>|<password>/i.test(process.env.MONGODB_URI)) {
-  console.error('❌ MONGODB_URI still contains a password placeholder. Open server/.env and put your Atlas database password in it.');
-  process.exit(1);
+  throw new Error('MONGODB_URI still contains a password placeholder. Put your Atlas database password in it.');
 }
 
 if (process.env.JWT_SECRET.length < 32) {
@@ -31,7 +33,8 @@ export const env = {
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   clientUrls: list(process.env.CLIENT_URL, 'http://localhost:5173'),
-  trustProxy: num(process.env.TRUST_PROXY, 0), // number of trusted proxy hops in front of the API
+  // number of trusted proxy hops in front of the API (Vercel always has one)
+  trustProxy: num(process.env.TRUST_PROXY, process.env.VERCEL ? 1 : 0),
 
   llm: {
     order: list(process.env.LLM_PROVIDER_ORDER, 'groq,gemini'),
